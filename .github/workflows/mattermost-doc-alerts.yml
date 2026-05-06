@@ -9,7 +9,6 @@ on:
     types: [opened, reopened, ready_for_review, closed]
     paths:
       - website/**
-  fork:
   release:
     types: [released]
   workflow_dispatch:
