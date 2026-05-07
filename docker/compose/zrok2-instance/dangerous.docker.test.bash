@@ -99,6 +99,14 @@ wait_for_port() {
 }
 
 dump_logs() {
+    log_info "compose service status:"
+    (cd "${COMPOSE_PROJECT_DIR}" && docker compose ps -a) 2>/dev/null || true
+    log_info "container health details:"
+    (cd "${COMPOSE_PROJECT_DIR}" && docker compose ps -aq | xargs -r docker inspect \
+        --format '{{.Name}} status={{.State.Status}} exit={{.State.ExitCode}} health={{json .State.Health}}') \
+        2>/dev/null || true
+    log_info "InfluxDB logs (last 200 lines):"
+    (cd "${COMPOSE_PROJECT_DIR}" && docker compose logs --tail=200 influxdb) 2>/dev/null || true
     log_info "container logs (last 100 lines each):"
     (cd "${COMPOSE_PROJECT_DIR}" && docker compose logs --tail=100) 2>/dev/null || true
 }

@@ -295,7 +295,7 @@ services:
     restart: unless-stopped
 
   influxdb:
-    image: influxdb:2-alpine
+    image: ${INFLUXDB_IMAGE:-influxdb:2.8-alpine}
     profiles: ["metrics"]
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
