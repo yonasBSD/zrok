@@ -1,4 +1,4 @@
-"""Tests for zrok.environment.root — Root, Load, Default, ApiEndpoint."""
+"""Tests for zrok2.environment.root — Root, Load, Default, ApiEndpoint."""
 
 import json
 import os
@@ -98,9 +98,9 @@ class TestRootPersistence:
         id_dir = str(tmp_zrok_dir / "identities")
         id_file = str(tmp_zrok_dir / "identities" / "environment.json")
 
-        with patch("zrok.environment.root.environmentFile", return_value=env_file), \
-             patch("zrok.environment.root.identitiesDir", return_value=id_dir), \
-             patch("zrok.environment.root.identityFile", return_value=id_file):
+        with patch("zrok2.environment.root.environmentFile", return_value=env_file), \
+             patch("zrok2.environment.root.identitiesDir", return_value=id_dir), \
+             patch("zrok2.environment.root.identityFile", return_value=id_file):
             env = Environment(Token="tok", ZitiIdentity="zid", ApiEndpoint="https://x.io")
             root.SetEnvironment(env)
 
@@ -125,15 +125,15 @@ class TestRootPersistence:
         root = Root(meta=Metadata(V=V, RootPath=str(tmp_zrok_dir)))
         env_file = str(tmp_zrok_dir / "environment.json")
         id_file = str(tmp_zrok_dir / "identities" / "environment.json")
-        with patch("zrok.environment.root.environmentFile", return_value=env_file), \
-             patch("zrok.environment.root.identityFile", return_value=id_file):
+        with patch("zrok2.environment.root.environmentFile", return_value=env_file), \
+             patch("zrok2.environment.root.identityFile", return_value=id_file):
             # Should not raise
             root.DeleteEnvironment()
 
 
 class TestDefault:
     def test_default_creates_root_with_version(self):
-        with patch("zrok.environment.root.rootDir", return_value="/tmp/fakezrok"):
+        with patch("zrok2.environment.root.rootDir", return_value="/tmp/fakezrok"):
             r = Default()
             assert r.meta.V == V
             assert r.meta.RootPath == "/tmp/fakezrok"
@@ -152,7 +152,7 @@ class TestClientVersionCheck:
         mock_response.status_code = 400
         mock_metadata_api.client_version_check_with_http_info.return_value = mock_response
 
-        with patch("zrok.environment.root.zrok.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.environment.root.zrok.MetadataApi", return_value=mock_metadata_api):
             with pytest.raises(Exception, match="Client version check failed"):
                 root.client_version_check(mock_client)
 
@@ -167,6 +167,6 @@ class TestClientVersionCheck:
         mock_response.status_code = 200
         mock_metadata_api.client_version_check_with_http_info.return_value = mock_response
 
-        with patch("zrok.environment.root.zrok.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.environment.root.zrok.MetadataApi", return_value=mock_metadata_api):
             # Should not raise
             root.client_version_check(mock_client)

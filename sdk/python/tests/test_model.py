@@ -1,4 +1,4 @@
-"""Tests for zrok.model — dataclass construction and constants."""
+"""Tests for zrok2.model — dataclass construction and constants."""
 
 import zrok2.model as model
 

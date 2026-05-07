@@ -38,6 +38,23 @@ HOP_BY_HOP_HEADERS = {
 DUMMY_PORT = 18081
 
 
+def _target_url(target: str, path: str) -> str:
+    target_parts = urllib.parse.urlsplit(target)
+    if not target_parts.scheme or not target_parts.netloc:
+        raise ValueError("proxy target must include a scheme and host")
+
+    path_parts = urllib.parse.urlsplit(path)
+    if path_parts.scheme or path_parts.netloc:
+        raise ValueError("absolute proxy paths are not allowed")
+
+    url = urllib.parse.urljoin(target, path)
+    url_parts = urllib.parse.urlsplit(url)
+    if url_parts.scheme != target_parts.scheme or url_parts.netloc != target_parts.netloc:
+        raise ValueError("proxy path escapes configured target")
+
+    return url
+
+
 @dataclass
 class ProxyShare:
     """Represents a proxy share with its configuration and state."""
@@ -150,8 +167,10 @@ class ProxyShare:
         @app.route('/', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
         @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
         def proxy(path):
-            # Construct the target URL
-            url = urllib.parse.urljoin(self.target, path)
+            try:
+                url = _target_url(self.target, path)
+            except ValueError:
+                return Response("bad proxy path", status=400)
 
             # Forward the request
             resp = requests.request(

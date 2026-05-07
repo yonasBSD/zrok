@@ -1,4 +1,4 @@
-"""Tests for zrok.environment.enable — enable() and disable()."""
+"""Tests for zrok2.environment.enable — enable() and disable()."""
 
 import pytest
 from unittest.mock import patch, MagicMock
@@ -38,10 +38,10 @@ class TestEnable:
         id_file = str(tmp_zrok_dir / "identities" / "environment.json")
 
         with patch.object(fresh_root, "Client", return_value=mock_client), \
-             patch("zrok.environment.enable.EnvironmentApi", return_value=mock_env_api), \
-             patch("zrok.environment.root.environmentFile", return_value=env_file), \
-             patch("zrok.environment.root.identitiesDir", return_value=id_dir), \
-             patch("zrok.environment.root.identityFile", return_value=id_file):
+             patch("zrok2.environment.enable.EnvironmentApi", return_value=mock_env_api), \
+             patch("zrok2.environment.root.environmentFile", return_value=env_file), \
+             patch("zrok2.environment.root.identitiesDir", return_value=id_dir), \
+             patch("zrok2.environment.root.identityFile", return_value=id_file):
             env = enable(fresh_root, "my-token", description="test host")
             assert env.Token == "my-token"
             assert env.ZitiIdentity == "new-ziti-id"
@@ -60,7 +60,7 @@ class TestEnable:
         mock_env_api.enable_with_http_info.side_effect = Exception("500 server error")
 
         with patch.object(fresh_root, "Client", return_value=mock_client), \
-             patch("zrok.environment.enable.EnvironmentApi", return_value=mock_env_api):
+             patch("zrok2.environment.enable.EnvironmentApi", return_value=mock_env_api):
             with pytest.raises(Exception, match="unable to enable environment"):
                 enable(fresh_root, "my-token")
         assert not fresh_root.IsEnabled()
@@ -78,9 +78,9 @@ class TestDisable:
         env_file = str(tmp_zrok_dir / "environment.json")
         id_file = str(tmp_zrok_dir / "identities" / "environment.json")
 
-        with patch("zrok.environment.enable.EnvironmentApi", return_value=mock_env_api), \
-             patch("zrok.environment.root.environmentFile", return_value=env_file), \
-             patch("zrok.environment.root.identityFile", return_value=id_file):
+        with patch("zrok2.environment.enable.EnvironmentApi", return_value=mock_env_api), \
+             patch("zrok2.environment.root.environmentFile", return_value=env_file), \
+             patch("zrok2.environment.root.identityFile", return_value=id_file):
             disable(mock_root)
             mock_env_api.disable_with_http_info.assert_called_once()
             assert not mock_root.IsEnabled()

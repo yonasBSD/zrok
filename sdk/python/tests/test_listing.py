@@ -1,4 +1,4 @@
-"""Tests for zrok.listing — list_shares, list_accesses."""
+"""Tests for zrok2.listing — list_shares, list_accesses."""
 
 import pytest
 from unittest.mock import patch, MagicMock
@@ -28,7 +28,7 @@ class TestListShares:
         mock_res.shares = [mock_share]
         mock_metadata_api.list_shares.return_value = mock_res
 
-        with patch("zrok.listing.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.listing.MetadataApi", return_value=mock_metadata_api):
             shares = list_shares(mock_root)
             assert len(shares) == 1
             assert shares[0].Token == "shr_abc"
@@ -40,7 +40,7 @@ class TestListShares:
         mock_res.shares = []
         mock_metadata_api.list_shares.return_value = mock_res
 
-        with patch("zrok.listing.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.listing.MetadataApi", return_value=mock_metadata_api):
             shares = list_shares(mock_root)
             assert shares == []
 
@@ -50,7 +50,7 @@ class TestListShares:
         mock_res.shares = None
         mock_metadata_api.list_shares.return_value = mock_res
 
-        with patch("zrok.listing.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.listing.MetadataApi", return_value=mock_metadata_api):
             shares = list_shares(mock_root)
             assert shares == []
 
@@ -77,7 +77,7 @@ class TestListAccesses:
         mock_res.accesses = [mock_access]
         mock_metadata_api.list_accesses.return_value = mock_res
 
-        with patch("zrok.listing.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.listing.MetadataApi", return_value=mock_metadata_api):
             accesses = list_accesses(mock_root)
             assert len(accesses) == 1
             assert accesses[0].FrontendToken == "fe_tok"
@@ -89,6 +89,6 @@ class TestListAccesses:
         mock_res.accesses = []
         mock_metadata_api.list_accesses.return_value = mock_res
 
-        with patch("zrok.listing.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.listing.MetadataApi", return_value=mock_metadata_api):
             accesses = list_accesses(mock_root)
             assert accesses == []

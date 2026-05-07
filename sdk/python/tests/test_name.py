@@ -1,4 +1,4 @@
-"""Tests for zrok.name — create_name, delete_name, list_names, list_namespaces."""
+"""Tests for zrok2.name — create_name, delete_name, list_names, list_namespaces."""
 
 import pytest
 from unittest.mock import patch, MagicMock
@@ -14,7 +14,7 @@ class TestCreateName:
     def test_create_name(self, mock_root):
         mock_share_api = MagicMock()
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             entry = create_name(mock_root, "myname", namespace_token="ns1")
             assert entry.Name == "myname"
             assert entry.NamespaceToken == "ns1"
@@ -23,7 +23,7 @@ class TestCreateName:
     def test_create_name_default_namespace(self, mock_root):
         mock_share_api = MagicMock()
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             entry = create_name(mock_root, "myname")
             assert entry.NamespaceToken == ""
 
@@ -36,7 +36,7 @@ class TestDeleteName:
     def test_delete_name(self, mock_root):
         mock_share_api = MagicMock()
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             delete_name(mock_root, "myname", namespace_token="ns1")
             mock_share_api.delete_share_name_with_http_info.assert_called_once()
 
@@ -57,7 +57,7 @@ class TestListNames:
         mock_name.created_at = 1000
         mock_share_api.list_names_for_namespace.return_value = [mock_name]
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             names = list_names(mock_root, namespace_token="ns1")
             assert len(names) == 1
             assert names[0].Name == "myname"
@@ -78,7 +78,7 @@ class TestListNames:
         mock_name.created_at = 0
         mock_share_api.list_names_for_namespace.return_value = [mock_name]
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             names = list_names(mock_root)
             assert len(names) == 1
 
@@ -96,7 +96,7 @@ class TestListNamespaces:
         mock_ns.description = "Public namespace"
         mock_share_api.list_share_namespaces.return_value = [mock_ns]
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             nss = list_namespaces(mock_root)
             assert len(nss) == 1
             assert nss[0].NamespaceToken == "ns1"
@@ -106,6 +106,6 @@ class TestListNamespaces:
         mock_share_api = MagicMock()
         mock_share_api.list_share_namespaces.return_value = []
 
-        with patch("zrok.name.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.name.ShareApi", return_value=mock_share_api):
             nss = list_namespaces(mock_root)
             assert nss == []

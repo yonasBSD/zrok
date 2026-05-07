@@ -1,4 +1,4 @@
-"""Tests for zrok.share — CreateShare, DeleteShare, ModifyShare, GetShareDetail."""
+"""Tests for zrok2.share — CreateShare, DeleteShare, ModifyShare, GetShareDetail."""
 
 import pytest
 from unittest.mock import patch, MagicMock
@@ -40,10 +40,10 @@ class TestCreateShare:
             Frontends=["public"],
         )
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api), \
-             patch("zrok.share._ShareRequest__newPublicShare",
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api), \
+             patch("zrok2.share._ShareRequest__newPublicShare",
                    return_value=_make_mock_api_share_request(), create=True) as _, \
-             patch("zrok.share.ShareRequest", return_value=_make_mock_api_share_request()):
+             patch("zrok2.share.ShareRequest", return_value=_make_mock_api_share_request()):
             share = CreateShare(mock_root, req)
             assert share.Token == "shr_abc123"
             assert share.FrontendEndpoints == ["https://abc123.share.zrok.io"]
@@ -62,8 +62,8 @@ class TestCreateShare:
             Target="tcp://localhost:25565",
         )
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api), \
-             patch("zrok.share.ShareRequest", return_value=_make_mock_api_share_request()):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api), \
+             patch("zrok2.share.ShareRequest", return_value=_make_mock_api_share_request()):
             share = CreateShare(mock_root, req)
             assert share.Token == "shr_priv"
 
@@ -92,8 +92,8 @@ class TestCreateShare:
             BasicAuth=["user1:pass1"],
         )
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api), \
-             patch("zrok.share.ShareRequest", return_value=_make_mock_api_share_request()):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api), \
+             patch("zrok2.share.ShareRequest", return_value=_make_mock_api_share_request()):
             share = CreateShare(mock_root, req)
             assert share.Token == "shr_auth"
 
@@ -103,7 +103,7 @@ class TestDeleteShare:
         mock_share_api = MagicMock()
         shr = model.Share(Token="shr_abc", FrontendEndpoints=[])
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api):
             DeleteShare(mock_root, shr)
             mock_share_api.unshare_with_http_info.assert_called_once()
 
@@ -112,7 +112,7 @@ class TestDeleteShare:
         mock_share_api.unshare_with_http_info.side_effect = Exception("404")
         shr = model.Share(Token="shr_bad", FrontendEndpoints=[])
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api):
             with pytest.raises(Exception, match="error deleting share"):
                 DeleteShare(mock_root, shr)
 
@@ -122,7 +122,7 @@ class TestReleaseReservedShare:
         mock_share_api = MagicMock()
         shr = model.Share(Token="shr_reserved", FrontendEndpoints=[])
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api):
             ReleaseReservedShare(mock_root, shr)
             mock_share_api.unshare_with_http_info.assert_called_once()
             call_args = mock_share_api.unshare_with_http_info.call_args
@@ -140,7 +140,7 @@ class TestModifyShare:
     def test_modify_share_adds_grants(self, mock_root):
         mock_share_api = MagicMock()
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api):
             ModifyShare(mock_root, "shr_abc", add_access_grants=["grant1"])
             mock_share_api.update_share_with_http_info.assert_called_once()
 
@@ -148,7 +148,7 @@ class TestModifyShare:
         mock_share_api = MagicMock()
         mock_share_api.update_share_with_http_info.side_effect = Exception("500")
 
-        with patch("zrok.share.ShareApi", return_value=mock_share_api):
+        with patch("zrok2.share.ShareApi", return_value=mock_share_api):
             with pytest.raises(Exception, match="error modifying share"):
                 ModifyShare(mock_root, "shr_abc", add_access_grants=["grant1"])
 
@@ -173,7 +173,7 @@ class TestGetShareDetail:
         mock_res.updated_at = 2000
         mock_metadata_api.get_share_detail.return_value = mock_res
 
-        with patch("zrok.share.MetadataApi", return_value=mock_metadata_api):
+        with patch("zrok2.share.MetadataApi", return_value=mock_metadata_api):
             detail = GetShareDetail(mock_root, "shr_abc")
             assert detail.Token == "shr_abc"
             assert detail.ShareMode == "public"
