@@ -4,6 +4,8 @@
 
 FIX: Frontends configured with `interstitial.user_agent_prefixes` no longer suppress the interstitial page for all requests. The prefix list is now correctly evaluated as an allow-list of User-Agents that should receive the page; if the list is empty all User-Agents receive it, matching the documented behavior.
 
+FIX: Updated `github.com/shoenig/go-m1cpu` to v0.2.1 to correct segmentation violation on M5 macos systems.
+
 ## v2.0.2
 
 FIX: The `drive` backend mode WebDAV implementation now prevents symlink traversal outside the configured shared directory. `Stat`, `OpenFile`, `Mkdir`, `RemoveAll`, and `Rename` now reject symlinks that resolve outside the drive root while continuing to allow symlinks that resolve within that tree. This fixes GHSA-74m3-9qvm-rp9h.
