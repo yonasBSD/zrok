@@ -1,4 +1,4 @@
-"""Tests for zrok.status — status()."""
+"""Tests for zrok2.status — status()."""
 
 from zrok2.status import status
 from zrok2.environment.root import Root
