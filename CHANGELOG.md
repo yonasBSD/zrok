@@ -6,6 +6,8 @@ FIX: The Python SDK `ProxyShare` now rejects absolute proxy request paths before
 
 FIX: Updated Python SDK unit tests to patch `zrok2.*` modules instead of the legacy `zrok.*` package path, allowing the non-integration test suite to pass against the v2 Python package layout.
 
+FIX: The zrok2 Docker Compose self-hosting metrics service now defaults to `influxdb:2.8-alpine` instead of the floating `influxdb:2-alpine` tag to avoid upstream image regressions. Docker Compose integration test failures now also include compose service status, container health details, and focused InfluxDB logs for faster diagnosis.
+
 FIX: The `zrok2 copy` drive sync path now rejects unsafe WebDAV and zrok drive paths before writing to a local filesystem target. Local drive sync operations are root-confined to prevent attacker-controlled paths or symlinks from writing, removing, moving, or timestamping files outside the selected destination while still allowing symlinks that resolve within the destination tree.
 
 FIX: Frontends configured with `interstitial.user_agent_prefixes` no longer suppress the interstitial page for all requests. The prefix list is now correctly evaluated as an allow-list of User-Agents that should receive the page; if the list is empty all User-Agents receive it, matching the documented behavior.
